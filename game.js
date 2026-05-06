@@ -303,7 +303,6 @@ let westRoomSpan = document.getElementById('west-room');
 // -------------------- 辅助函数：输出文本 --------------------
 // function print(msg) {
 //     outputDiv.innerHTML += msg + '<br>';
-//     outputDiv.scrollTop = outputDiv.scrollHeight;
 // }
 
 // function clearOutput() {
@@ -440,7 +439,7 @@ function showRoomInfo(room) {
     }
     
     // 更新主内容缓存
-    mainContent = outputDiv.innerHTML;
+    mainContent = UI.getOutputHtml();
     
     // 检测血色宝石：如果玩家进入训练场且装备了血色宝石，莉娅娜会攻击
     if (loc === 'training_ground' && room.npcs && room.npcs.includes('liana')) {
@@ -744,18 +743,18 @@ function closeCurrentPanel() {
     
     if (currentPanel === 'inventory') {
         if (mainContent) {
-            outputDiv.innerHTML = mainContent;
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+            UI.setOutputHtml(mainContent);
+    
         }
     } else if (currentPanel === 'equipment') {
         if (mainContent) {
-            outputDiv.innerHTML = mainContent;
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+            UI.setOutputHtml(mainContent);
+    
         }
     } else if (currentPanel === 'status') {
         if (mainContent) {
-            outputDiv.innerHTML = mainContent;
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+            UI.setOutputHtml(mainContent);
+    
         }
     } else if (currentPanel === 'quests') {
         // 恢复详情栏默认内容
@@ -764,19 +763,19 @@ function closeCurrentPanel() {
         // 从详情页返回
         if (detailContent) {
             outputDiv.innerHTML = detailContent;
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
         }
     } else if (currentPanel === 'ground_item') {
         // 从地面物品详情页返回
         if (groundItemReturnTarget) {
             outputDiv.innerHTML = groundItemReturnTarget;
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
         }
     } else if (currentPanel === 'npc_detail') {
         // 从NPC详情页返回
         if (mainContent) {
-            outputDiv.innerHTML = mainContent;
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+            UI.setOutputHtml(mainContent);
+    
         }
     }
     currentPanel = null;
@@ -832,7 +831,7 @@ function showQuestsPanel() {
     
     // 保存当前输出内容
     if (currentPanel === null) {
-        mainContent = outputDiv.innerHTML;
+        mainContent = UI.getOutputHtml();
     }
     
     // 显示任务内容到详情栏
@@ -1436,7 +1435,6 @@ function useItemFromDetail(itemId) {
                 } else {
                     print(`<span style="color: #cccccc;">${roadStory[lineIndex]}</span>`);
                 }
-                outputDiv.scrollTop = outputDiv.scrollHeight;
                 lineIndex++;
                 setTimeout(showNextRoadLine, roadStory[lineIndex - 1] === "" ? 500 : 1300);
             } else {
@@ -1574,7 +1572,6 @@ function readItemFromDetail(itemId) {
         function showNextLine() {
             if (lineIndex < item.content.length) {
                 print(`<span class="story-text">${item.content[lineIndex]}</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
                 lineIndex++;
                 setTimeout(showNextLine, 1300);
             } else {
@@ -1603,7 +1600,6 @@ function readItemFromDetail(itemId) {
             if (lineIndex < item.content.length) {
                 // 密令使用金色文字显示
                 print(`<span style="color: #ffdd44; font-family: serif;">${item.content[lineIndex]}</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
                 lineIndex++;
                 setTimeout(showNextOrderLine, 1300);
             } else {
@@ -2686,7 +2682,6 @@ function openIronLockWithKey(lockId) {
     function showNextStoryLine() {
         if (storyIndex < storyLines.length) {
             print(`<span class="story-text">${storyLines[storyIndex]}</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
             storyIndex++;
             setTimeout(showNextStoryLine, 1300);
         } else {
@@ -2829,7 +2824,6 @@ function breakLock(lockId) {
         function showNextStoryLine() {
             if (storyIndex < storyLines.length) {
                 print(`<span class="story-text">${storyLines[storyIndex]}</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
                 storyIndex++;
                 setTimeout(showNextStoryLine, 1300);
             } else {
@@ -3144,7 +3138,6 @@ function triggerEnding() {
             } else {
                 print(`<span style="color: #cccccc;">${endingStory[lineIndex]}</span>`);
             }
-            outputDiv.scrollTop = outputDiv.scrollHeight;
             lineIndex++;
             setTimeout(showNextEndingLine, endingStory[lineIndex - 1] === "" ? 500 : 1300);
         } else {
@@ -3888,7 +3881,6 @@ function startCraftingProcess(category, recipeId) {
     function printNextCraftLine() {
         if (lineIndex < craftStory.length) {
             print(`<span style="color: #88ccff;">${craftStory[lineIndex]}</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
             lineIndex++;
             setTimeout(printNextCraftLine, 800);
         } else {
@@ -4315,7 +4307,6 @@ function startCookingProcess(inventoryIndex) {
         if (lineIndex < cookStory.length) {
             print("<br>");
             print(`<span style="color: #ffaa66;">${cookStory[lineIndex]}</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
             lineIndex++;
             showNextBtn(printNextLine);
         } else {
@@ -4426,17 +4417,14 @@ function jumpIntoPit(pitId) {
     
     setTimeout(() => {
         print(`<span class="story-text">身体在黑暗中急速下坠...</span>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
     }, 1300);
     
     setTimeout(() => {
         print(`<span class="story-text">碎石和岩壁擦过你的手臂，留下一道道血痕。</span>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
     }, 2600);
     
     setTimeout(() => {
         print(`<span class="story-text">砰！你重重地摔在坚硬的矿道地面上。</span>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
     }, 3900);
     
     setTimeout(() => {
@@ -4444,7 +4432,6 @@ function jumpIntoPit(pitId) {
         gameState.player.hp = Math.max(0, gameState.player.hp - 10);
         print(`<span style="color: #ff6666;">你受到了 10 点坠落伤害！</span>`);
         print(`<span style="color: #ff8888;">当前 HP: ${gameState.player.hp}/${gameState.player.maxHp}</span>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
         
         // 从当前房间移除矿坑
         const pitIndex = room.items.indexOf(pitId);
@@ -4499,17 +4486,14 @@ function useLadder(ladderId) {
             
             setTimeout(() => {
                 print(`<span class="story-text">梯子稳稳地架在岩壁与地面之间。</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
             }, 1000);
             
             setTimeout(() => {
                 print(`<span class="story-text">你顺着梯子向上爬去...</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
             }, 2300);
             
             setTimeout(() => {
                 print(`<span class="story-text">头顶被封堵的木板被推开，月光洒落进来。</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
             }, 3600);
             
             setTimeout(() => {
@@ -4533,17 +4517,17 @@ function useLadder(ladderId) {
             
             setTimeout(() => {
                 print(`<span class="story-text">梯子稳稳地架在井壁之间。</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
+
             }, 1000);
             
             setTimeout(() => {
                 print(`<span class="story-text">你顺着梯子向下爬去...</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
+
             }, 2300);
             
             setTimeout(() => {
                 print(`<span class="story-text">黑暗和腐臭的气息扑面而来。</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
+
             }, 3600);
             
             setTimeout(() => {
@@ -4704,17 +4688,17 @@ function useRemovedLadderFromInventory() {
         
         setTimeout(() => {
             print(`<span class="story-text">梯子稳稳地架在岩壁与地面之间。</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
         }, 1000);
         
         setTimeout(() => {
             print(`<span class="story-text">你顺着梯子向上爬去...</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
         }, 2300);
         
         setTimeout(() => {
             print(`<span class="story-text">头顶被封堵的木板被推开，月光洒落进来。</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
         }, 3600);
         
         setTimeout(() => {
@@ -4738,17 +4722,17 @@ function useRemovedLadderFromInventory() {
         
         setTimeout(() => {
             print(`<span class="story-text">梯子稳稳地架在井壁之间。</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
         }, 1000);
         
         setTimeout(() => {
             print(`<span class="story-text">你顺着梯子向下爬去...</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
         }, 2300);
         
         setTimeout(() => {
             print(`<span class="story-text">黑暗和腐臭的气息扑面而来。</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
         }, 3600);
         
         setTimeout(() => {
@@ -4794,7 +4778,7 @@ function useLimb(itemId) {
             if (lineIndex < item.story.length) {
                 print("<br>");
                 print(`<span style="color: #ff4486;">${item.story[lineIndex]}</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
+
                 lineIndex++;
                 showNextBtn(showNextLine);
             } else {
@@ -4963,7 +4947,7 @@ function startMilkingProcess(inventoryIndex) {
         if (lineIndex < milkStory.length) {
             print("<br>");
             print(`<span style="color: #a8ff44;">${milkStory[lineIndex]}</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
             lineIndex++;
             showNextBtn(printNextLine);
         } else {
@@ -5110,7 +5094,7 @@ function startSemenProcess(inventoryIndex) {
         if (lineIndex < semenStory.length) {
             print("<br>");
             print(`<span style="color: #ff88cc;">${semenStory[lineIndex]}</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
             lineIndex++;
             showNextBtn(printNextLine);
         } else {
@@ -5181,7 +5165,7 @@ function useCorpse(itemId) {
         if (lineIndex < story.length) {
             print("<br>");
             print(`<span style="color: #c444ff;">${story[lineIndex]}</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
             lineIndex++;
             showNextBtn(showNextCorpseLine);
         } else {
@@ -5235,7 +5219,7 @@ function useCorpseOnGround(itemId) {
         if (lineIndex < story.length) {
             print("<br>");
             print(`<span style="color: #ff66aa;">${story[lineIndex]}</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
             lineIndex++;
             showNextBtn(showNextCorpseLine);
         } else {
@@ -6059,7 +6043,7 @@ function talkToNPCAction(npcId) {
         if (lineIndex < dialogues.length) {
             print("<br>");
             print(`<span style="color: #ff8844;">${dialogues[lineIndex]}</span>`);
-            outputDiv.scrollTop = outputDiv.scrollHeight;
+    
             lineIndex++;
             showNextBtn(showNextDialogue);
         } else {
@@ -6192,7 +6176,7 @@ function handleWestTunnelStory(roomId) {
             function showNextLine() {
                 if (index < storyLines.length) {
                     print(`<span class="story-text">${storyLines[index]}</span>`);
-                    outputDiv.scrollTop = outputDiv.scrollHeight;
+    
                     index++;
                     setTimeout(showNextLine, 1300);
                 } else {
@@ -6217,7 +6201,7 @@ function handleWestTunnelStory(roomId) {
             function showNextLine() {
                 if (index < storyLines.length) {
                     print(`<span class="story-text">${storyLines[index]}</span>`);
-                    outputDiv.scrollTop = outputDiv.scrollHeight;
+    
                     index++;
                     setTimeout(showNextLine, 1300);
                 } else {
@@ -6244,7 +6228,7 @@ function handleWestTunnelStory(roomId) {
             function showNextLine() {
                 if (index < storyLines.length) {
                     print(`<span class="story-text">${storyLines[index]}</span>`);
-                    outputDiv.scrollTop = outputDiv.scrollHeight;
+    
                     index++;
                     setTimeout(showNextLine, 1300);
                 } else {
@@ -6271,13 +6255,13 @@ function handleWestTunnelStory(roomId) {
             function showNextLine() {
                 if (index < storyLines.length) {
                     print(`<span class="story-text">${storyLines[index]}</span>`);
-                    outputDiv.scrollTop = outputDiv.scrollHeight;
+    
                     index++;
                     setTimeout(showNextLine, 1300);
                 } else {
                     print("");
                     print(`<span style="color: #ff0000; font-size: 18px;">你成为了疯疫的傀儡。</span>`);
-                    outputDiv.scrollTop = outputDiv.scrollHeight;
+    
                     
                     // 强制死亡
                     setTimeout(() => {
@@ -6305,8 +6289,8 @@ function startMultiBattle(npcIds) {
     
     // 先显示主界面内容
     if (mainContent) {
-        outputDiv.innerHTML = mainContent;
-        outputDiv.scrollTop = outputDiv.scrollHeight;
+        UI.setOutputHtml(mainContent);
+
     }
     
     print("");
@@ -6962,7 +6946,7 @@ function milkNPC(npcId) {
                 let text = semenStory[lineIndex].replace('\${npc.name}', npc.name);
                 print("<br>");
                 print(`<span style="color: #ff88cc;">${text}</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
+
                 lineIndex++;
                 showNextBtn(printNextLine);
             } else {
@@ -7090,7 +7074,7 @@ function assaultNPC(npcId) {
             if (lineIndex < story.length) {
                 print("<br>");
                 print(`<span style="color: #ff44e3;">${story[lineIndex]}</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
+
                 lineIndex++;
                 showNextBtn(showNextAssaultLine);
             } else {
@@ -7476,7 +7460,7 @@ function teleportToBasement() {
 
     setTimeout(() => {
         print(`<span class="story-text">光芒渐渐散去，熟悉的地下室出现在你面前。</span>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
+
     }, 2400);
     
     setTimeout(() => {
